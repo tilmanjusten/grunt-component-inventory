@@ -24,11 +24,9 @@ module.exports = function(grunt) {
 
     // Configuration to be run (and then tested).
     'component-inventory': {
-      default_options: {
+      test: {
         options: {
-        },
-        files: {
-          'tmp/default_options': ['test/fixtures/testing', 'test/fixtures/123']
+          storage: 'examples/component-inventory.json'
         }
       }
     }
@@ -43,7 +41,7 @@ module.exports = function(grunt) {
 
   // Whenever the "test" task is run, first clean the "tmp" dir, then run this
   // plugin's task(s), then test the result.
-  grunt.registerTask('test', ['jshint', 'component-inventory']);
+  grunt.registerTask('test', ['jshint', 'component-inventory:test']);
 
   // By default, lint and run all tests.
   grunt.registerTask('default', ['jshint']);
