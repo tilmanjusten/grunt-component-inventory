@@ -29,13 +29,34 @@
             margin: 3rem auto;
         }
 
-        .category {
+        .document-header {}
 
+        .document-header__navigation {}
+
+        .document-header__navigation ul {
+            list-style: none;
+            padding-left: 0;
         }
 
-        .category__title {
-
+        .document-header__navigation li {
+            display: inline-block;
+            padding: 0 5px;
+            margin: 0 5px;
         }
+
+        .document-main {}
+
+        .document-main__navigation {}
+
+        .document-main__navigation ul {}
+
+        .document-main__navigation li {
+            /*display: inline-block;*/
+        }
+
+        .category {}
+
+        .category__title {}
 
         .component {
             border-bottom: 1px solid #eee;
@@ -43,17 +64,11 @@
             padding-bottom: 3rem;
         }
 
-        .component__title {
+        .component__title {}
 
-        }
+        .component__headline {}
 
-        .component__headline {
-
-        }
-
-        .component__view {
-
-        }
+        .component__view {}
 
         .component__code {
             background: #fafafa;
@@ -67,9 +82,40 @@
 
     <header class="document-header">
         <h1 class="document-title">Component Inventory</h1>
+
+        <!-- Render navigation -->
+        <% if (_.isArray(navigation) && _.isBoolean(isIndex) && isIndex === false) { %>
+
+        <nav class="document-header__navigation">
+            <ul>
+                <li><a href="<%= navigation.index %>">Index</a></li>
+                <% _.forEach(navigation, function (item) { %>
+                <li><a href="<%= item.href %>"><%- item.name %></a></li>
+                <% }); %>
+            </ul>
+        </nav>
+
+        <% } %>
     </header>
 
     <main class="document-main">
+
+    <!-- Render index -->
+    <% if (_.isArray(navigation) && _.isBoolean(isIndex) && isIndex === true) { %>
+
+        <nav class="document-main__navigation">
+            <ul>
+                <% _.forEach(navigation, function (item) { %>
+                <li><a href="<%= item.href %>"><%- item.name %></a></li>
+                <% }); %>
+            </ul>
+        </nav>
+
+    <% }; %>
+
+
+    <!-- Render components -->
+    <% if (_.isArray(categories) && _.isBoolean(isIndex) && isIndex === false) { %>
 
         <% _.forEach(categories, function (category) { %>
         <div class="category">
@@ -97,6 +143,9 @@
 
         </div>
         <% }); %>
+
+    <% }; %>
+
 
     </main>
 
