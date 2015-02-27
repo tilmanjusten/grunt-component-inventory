@@ -71,49 +71,58 @@ module.exports = function (grunt) {
         // prepare template
         tmpl = template(templateFile, {imports: {'_': _}});
 
+        // Split data by category
+        var sections = renderingData.categories.map(function (category) {
+            var renderingDataClone = util._extend({}, renderingData);
+
+            renderingDataClone.categories = [];
+            renderingDataClone.categories.push(category);
+            renderingDataClone.itemLength = 1;
+            renderingDataClone.name = category.name;
+            renderingDataClone.isIndex = false;
+
+            return renderingDataClone;
+        });
+
+        var navigation = {
+            category: '',
+            index: options.dest,
+            items: []
+        };
+
+        navigation.items = sections.map(function (section) {
+            //get id from section name (equals category name)
+            var id = section.name.replace(/[^\w\d]+/ig, '').toLowerCase();
+            var extension = options.dest.split('.').pop();
+            // remove extension
+            var file = options.dest.indexOf('.') > -1 ? options.dest.replace(/\..+$/, '') : extension;
+            var dest = file + '--' + id + '.' + extension;
+            var item = {
+                href: dest,
+                name: section.name
+            };
+
+            section.dest = dest;
+
+            return item;
+        });
+
+        renderingData.navigation = navigation;
+
+        grunt.log.writeln();
+
         // write file per category and an index file
         if (options.expand) {
-            // Split data by category
-            var sections = renderingData.categories.map(function (category) {
-                var renderingDataClone = util._extend({}, renderingData);
-
-                renderingDataClone.categories = [];
-                renderingDataClone.categories.push(category);
-                renderingDataClone.itemLength = 1;
-                renderingDataClone.name = category.name;
-                renderingDataClone.isIndex = false;
-
-                return renderingDataClone;
-            });
-
-            grunt.log.writeln();
-
-            var navigation = sections.map(function (section) {
-                //get id from section name (equals category name)
-                var id = section.name.replace(/[^\w\d]+/ig, '').toLowerCase();
-                var extension = options.dest.split('.').pop();
-                // remove extension
-                var file = options.dest.indexOf('.') > -1 ? options.dest.replace(/\..+$/, '') : extension;
-                var dest = file + '--' + id + '.' + extension;
-                var item = {
-                    href: dest,
-                    name: section.name
-                };
-
-                section.dest = dest;
-
-                return item;
-            });
-
-            // Add index href
-            navigation.index = options.dest;
-
             // Write section inventories
             sections.forEach(function (section) {
+                navigation.category = section.name;
                 section.navigation = navigation;
 
                 writeTemplate(section.dest, tmpl, section);
             });
+
+            // empty category name for index
+            navigation.category = '';
 
             // Write index
             writeTemplate(options.dest, tmpl, {navigation: navigation, isIndex: true, categories: []});
