@@ -1,7 +1,7 @@
 {
   "name": "grunt-component-inventory",
   "description": "Create inventory of components from individual files or data stored in JSON file.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "homepage": "https://github.com/tilmanjusten/grunt-component-inventory",
   "author": {
     "name": "Tilman Justen",
