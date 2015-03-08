@@ -12,6 +12,8 @@ module.exports = function (grunt) {
 
     // Project configuration.
     grunt.initConfig({
+        clean: ['./dist'],
+
         jshint: {
             all: [
                 'Gruntfile.js',
@@ -26,13 +28,15 @@ module.exports = function (grunt) {
         'component-inventory': {
             test: {
                 options: {
-                    storage: 'examples/component-inventory.json'
+                    storage: 'examples/component-inventory.json',
+                    dest: 'dist/component-inventory.html'
                 }
             },
 
             test_expand: {
                 options: {
                     storage: 'examples/component-inventory.json',
+                    dest: 'dist/component-inventory.html',
                     expand: true
                 }
             }
@@ -44,6 +48,7 @@ module.exports = function (grunt) {
     grunt.loadTasks('tasks');
 
     // These plugins provide necessary tasks.
+    grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-jshint');
 
     // Whenever the "test" task is run, first clean the "tmp" dir, then run this
@@ -55,5 +60,8 @@ module.exports = function (grunt) {
 
     // By default, lint and run all tests.
     grunt.registerTask('default', ['jshint']);
+
+    // development task
+    grunt.registerTask('develop', ['clean', 'component-inventory:test_expand']);
 
 };
