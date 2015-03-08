@@ -18,6 +18,7 @@ module.exports = function (grunt) {
     var template = require('lodash/string/template');
     var path = require('path');
     var util = require('util');
+    var InventoryObject = require('./lib/inventory-object');
 
     grunt.registerMultiTask('component-inventory', 'Build inventory of components from distinct files or data stored in JSON file.', function () {
         // Merge task-specific and/or target-specific options with these defaults.
@@ -202,19 +203,7 @@ module.exports = function (grunt) {
             return false;
         }
 
-        return {
-            name:           item.name || 'Unknown',
-            category:       item.category || 'Unknown',
-            options:        item.options || {},
-            optionsData:    item.optionsData || '',
-            dest:           item.dest || '',
-            filename:       item.filename || '',
-            path:           item.path || '',
-            origin:         item.origin || '',
-            partial:        item.partial || '',
-            view:           item.view || '',
-            lines:          item.lines || []
-        };
+        return new InventoryObject(item);
     }
 
     function getIndexByName(arr, name) {
