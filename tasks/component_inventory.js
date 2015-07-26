@@ -20,6 +20,17 @@ module.exports = function (grunt) {
     var util = require('util');
     var InventoryObject = require('./../lib/inventory-object');
 
+    // extend InventoryObject
+    InventoryObject.prototype.addUsage = function (value) {
+        if (this.usage === undefined) {
+            this.usage = [];
+        }
+
+        if (this.usage.indexOf(value) < 0) {
+            this.usage.push(value);
+        }
+    };
+
     grunt.registerMultiTask('component-inventory', 'Build inventory of components from distinct files or data stored in JSON file.', function () {
         // Merge task-specific and/or target-specific options with these defaults.
         options = this.options({
