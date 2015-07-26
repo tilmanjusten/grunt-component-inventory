@@ -178,7 +178,10 @@ module.exports = function (grunt) {
             }
 
             var category = item.category || 'Unknown';
-            var categoryIndex = getIndexByName(prepared.categories, category);
+
+            var categoryIndex = _.findIndex(prepared.categories, function (category) {
+                return category.name === item.category;
+            });
 
             if (categoryIndex < 0) {
                 grunt.verbose.writeln('Create and prepare category ' + category);
@@ -220,24 +223,8 @@ module.exports = function (grunt) {
             return false;
         }
 
-    }
-
-    function getIndexByName(arr, name) {
-        if (!_.isArray(arr)) {
-            grunt.fail.warn('getIndexByName: Given parameter is not an array.');
-            return false;
-        }
-
-        var index = -1;
-
-        arr.map(function(item, i) {
-            if (item.hasOwnProperty('name') && item.name === name) {
-                index = i;
-        });
         var inventoryObject = new InventoryObject(item);
 
-        return index;
         return inventoryObject;
     }
-
 };
