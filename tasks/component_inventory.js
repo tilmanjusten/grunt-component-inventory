@@ -171,7 +171,7 @@ module.exports = function (grunt) {
         var item;
 
         _.forEach(data.items, function (el) {
-            item = prepareItem(el);
+            item = makeInventoryObject(el);
 
             if (!item) {
                 return false;
@@ -209,13 +209,17 @@ module.exports = function (grunt) {
         return prepared;
     }
 
-    function prepareItem(item) {
+    /**
+     *
+     * @param item
+     * @returns {*}
+     */
+    function makeInventoryObject(item) {
         if (!_.isPlainObject(item)) {
             grunt.log.error('Item is not an object');
             return false;
         }
 
-        return new InventoryObject(item);
     }
 
     function getIndexByName(arr, name) {
@@ -229,10 +233,11 @@ module.exports = function (grunt) {
         arr.map(function(item, i) {
             if (item.hasOwnProperty('name') && item.name === name) {
                 index = i;
-            }
         });
+        var inventoryObject = new InventoryObject(item);
 
         return index;
+        return inventoryObject;
     }
 
 };
