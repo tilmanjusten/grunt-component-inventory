@@ -47,7 +47,9 @@ module.exports = function (grunt) {
             // Create partial files
             storePartials: false,
             // Partial extension when stored
-            partialExt: '.html'
+            partialExt: '.html',
+            // Category for items without category
+            categoryFallback: 'No category'
         });
 
         var templateFile;
@@ -181,13 +183,15 @@ module.exports = function (grunt) {
         }
 
         var prepared = {
-            itemLength: 0,
             options: data.options || {},
             categories: [],
             isIndex: true,
             dest: options.dest
         };
         var item;
+        var uniquePartials = [];
+        var uniqueViewPartials = [];
+        var i = 0;
 
         _.forEach(data.items, function (el) {
             item = makeInventoryObject(el);
@@ -196,18 +200,20 @@ module.exports = function (grunt) {
                 return false;
             }
 
-            var category = item.category || 'Unknown';
+            // set default category to item
+            item.category = item.category || options.categoryFallback;
 
             var categoryIndex = _.findIndex(prepared.categories, function (category) {
                 return category.name === item.category;
             });
+            var isDuplicate = false;
 
             if (categoryIndex < 0) {
-                grunt.verbose.writeln('Create and prepare category ' + category);
+                grunt.verbose.writeln('Create and prepare category ' + item.category);
 
                 var categoryObj = {
-                    items: [],
-                    name: category
+                    items: {},
+                    name: item.category,
                 };
 
                 prepared.categories.push(categoryObj);
@@ -215,8 +221,22 @@ module.exports = function (grunt) {
                 categoryIndex = prepared.categories.length - 1;
             }
 
-            prepared.categories[categoryIndex].items.push(item);
-            prepared.itemLength++;
+            var categoryItems = prepared.categories[categoryIndex].items;
+
+            // store unique partials
+            if (uniquePartials.indexOf(item.id) < 0) {
+                //item.addUsage(item.origin);
+                uniquePartials.push(item.id);
+                categoryItems[item.id] = item;
+            } else {
+                isDuplicate = true;
+            }
+            // add usage (itemIndex of first is 0)
+            categoryItems[item.id].addUsage(item.origin);
+
+            if (uniqueViewPartials.indexOf(item.viewId) < 0) {
+                uniqueViewPartials.push(item.viewId);
+            }
 
             // store partial if not already happen
             if (options.storePartials && !isDuplicate) {
@@ -233,7 +253,8 @@ module.exports = function (grunt) {
         });
 
         grunt.log.writeln('Categories: ' + prepared.categories.length);
-        grunt.log.writeln('Items: ' + prepared.itemLength);
+        grunt.log.writeln('Items: ' + uniquePartials.length);
+        grunt.log.writeln('View items: ' + uniqueViewPartials.length);
 
         return prepared;
     }
