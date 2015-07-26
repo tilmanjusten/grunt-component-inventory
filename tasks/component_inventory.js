@@ -89,7 +89,7 @@ module.exports = function (grunt) {
 
             renderingDataClone.categories = [];
             renderingDataClone.categories.push(category);
-            renderingDataClone.itemLength = 1;
+            renderingDataClone.itemLength = category.items.length;
             renderingDataClone.name = category.name;
             renderingDataClone.isIndex = false;
 
@@ -111,7 +111,8 @@ module.exports = function (grunt) {
             var dest = file + '--' + id + '.' + extension;
             var item = {
                 href: dest,
-                name: section.name
+                name: section.name,
+                itemLength: section.itemLength
             };
 
             section.dest = dest;
