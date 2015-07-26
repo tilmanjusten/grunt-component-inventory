@@ -38,10 +38,16 @@ module.exports = function (grunt) {
             template: path.resolve(__dirname, '../tmpl/template.html'),
             // Storage file path
             storage: 'component-inventory.json',
+            // Partial directory where individual partial files will be stored (relative to base)
+            partials: './partials',
             // Component inventory file path
             dest: 'component-inventory.html',
             // Expand: create file per category
-            expand: false
+            expand: false,
+            // Create partial files
+            storePartials: false,
+            // Partial extension when stored
+            partialExt: '.html'
         });
 
         var templateFile;
@@ -211,6 +217,12 @@ module.exports = function (grunt) {
 
             prepared.categories[categoryIndex].items.push(item);
             prepared.itemLength++;
+
+            // store partial if not already happen
+            if (options.storePartials && !isDuplicate) {
+                var filename = item.id + options.partialExt;
+                grunt.file.write(path.resolve(options.partials, filename), item.template);
+            }
         });
 
         // sort categories and items by name
