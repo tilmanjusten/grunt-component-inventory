@@ -145,6 +145,13 @@ module.exports = function (grunt) {
         }
     });
 
+    /**
+     * write template code to file
+     *
+     * @param dest
+     * @param tmpl
+     * @param data
+     */
     function writeTemplate(dest, tmpl, data) {
         var log = data.isIndex ? 'Built inventory index in ' : 'Built component inventory in ';
 
@@ -155,6 +162,12 @@ module.exports = function (grunt) {
         grunt.log.oklns(log + dest);
     }
 
+    /**
+     * get and prepare list of inventory items
+     *
+     * @param data
+     * @returns {{options: (*|{}), categories: Array, isIndex: boolean, dest: string}}
+     */
     function prepareData(data) {
         if (typeof data !== 'object') {
             grunt.log.error('Item is not an object');
@@ -192,6 +205,7 @@ module.exports = function (grunt) {
                 };
 
                 prepared.categories.push(categoryObj);
+                // the index of the added item is the last one
                 categoryIndex = prepared.categories.length - 1;
             }
 
@@ -199,7 +213,7 @@ module.exports = function (grunt) {
             prepared.itemLength++;
         });
 
-        // sort categories by name
+        // sort categories and items by name
         prepared.categories = _.sortBy(prepared.categories, 'name');
 
         prepared.categories.forEach(function (category) {
