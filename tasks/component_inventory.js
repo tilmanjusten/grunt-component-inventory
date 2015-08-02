@@ -79,7 +79,6 @@ module.exports = function (grunt) {
             grunt.fail.warn('Storage file ' + options.storage + ' does not exist.');
         }
 
-
         grunt.verbose.writeln('Read template file ' + options.template);
         templateFile = grunt.file.read(options.template);
 
@@ -274,8 +273,6 @@ module.exports = function (grunt) {
             return false;
         }
 
-        var inventoryObject = new InventoryObject(item);
-
-        return inventoryObject;
+        return new InventoryObject(item);
     }
 };
