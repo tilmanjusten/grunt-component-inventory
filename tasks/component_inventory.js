@@ -107,7 +107,9 @@ module.exports = function (grunt) {
         var navigation = {
             category: '',
             index: options.dest,
-            items: []
+            items: [],
+            lengthUnique: renderingData.lengthUnique,
+            legthTotal: renderingData.lengthTotal
         };
 
         navigation.items = sections.map(function (section) {
@@ -186,7 +188,9 @@ module.exports = function (grunt) {
             options: data.options || {},
             categories: [],
             isIndex: true,
-            dest: options.dest
+            dest: options.dest,
+            lengthUnique: data.lengthUnique || 0,
+            lengthTotal: data.lengthTotal || 0
         };
         var item;
         var uniquePartials = [];
