@@ -39,9 +39,14 @@ module.exports = function (grunt) {
             // Storage file path
             storage: 'component-inventory.json',
             // Partial directory where individual partial files will be stored (relative to base)
-            partials: './partials',
-            // Component inventory file path
-            dest: 'component-inventory.html',
+            destPartials: './partials',
+            // Component inventory destination
+            dest: {
+                path: '.',
+                filename: 'component-inventory',
+                ext: '.html',
+                productionExt: '.html'
+            },
             // Expand: create file per category
             expand: false,
             // Create partial files
@@ -105,26 +110,24 @@ module.exports = function (grunt) {
 
         var navigation = {
             category: '',
-            index: options.dest,
+            index: options.dest.path + options.dest.filename + options.dest.productionExt,
             items: [],
             lengthUnique: renderingData.lengthUnique,
-            legthTotal: renderingData.lengthTotal
+            lengthTotal: renderingData.lengthTotal
         };
 
         navigation.items = sections.map(function (section) {
             //get id from section name (equals category name)
             var id = section.name.replace(/[^\w\d]+/ig, '').toLowerCase();
-            var extension = options.dest.split('.').pop();
             // remove extension
-            var file = options.dest.indexOf('.') > -1 ? options.dest.replace(/\..+$/, '') : extension;
-            var dest = file + '--' + id + '.' + extension;
+            var filename = options.dest.filename + '--' + id;
             var item = {
-                href: dest,
+                href: filename + options.dest.productionExt,
                 name: section.name,
                 itemLength: section.itemLength
             };
 
-            section.dest = dest;
+            section.dest = options.dest.path + filename + options.dest.ext;
 
             return item;
         });
@@ -147,10 +150,12 @@ module.exports = function (grunt) {
             navigation.category = '';
 
             // Write index
-            writeTemplate(options.dest, tmpl, {navigation: navigation, isIndex: true, categories: []});
+            var destIndex = options.dest.path + options.dest.filename + options.dest.ext;
+
+            writeTemplate(destIndex, tmpl, {navigation: navigation, isIndex: true, categories: []});
         } else {
             // write all components to single file
-            writeTemplate(options.dest, tmpl, renderingData);
+            writeTemplate(options.dest.path, tmpl, renderingData);
         }
     });
 
@@ -187,7 +192,7 @@ module.exports = function (grunt) {
             options: data.options || {},
             categories: [],
             isIndex: true,
-            dest: options.dest,
+            dest: options.dest.path,
             lengthUnique: data.lengthUnique || 0,
             lengthTotal: data.lengthTotal || 0
         };
@@ -244,7 +249,7 @@ module.exports = function (grunt) {
             // store partial if not already happen
             if (options.storePartials && !isDuplicate) {
                 var filename = item.id + options.partialExt;
-                grunt.file.write(path.resolve(options.partials, filename), item.template);
+                grunt.file.write(path.resolve(options.destPartials, filename), item.template);
             }
         });
 
