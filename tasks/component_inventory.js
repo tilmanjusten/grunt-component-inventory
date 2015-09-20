@@ -54,7 +54,11 @@ module.exports = function (grunt) {
             // Partial extension when stored
             partialExt: '.html',
             // Category for items without category
-            categoryFallback: 'No category'
+            categoryFallback: 'No category',
+            // Store data as json
+            storeData: false,
+            // Data destination
+            destData: './data'
         });
 
         var templateFile;
@@ -156,6 +160,15 @@ module.exports = function (grunt) {
         } else {
             // write all components to single file
             writeTemplate(options.dest.path, tmpl, renderingData);
+        }
+
+        if (options.storeData) {
+            var data = {
+                navigation: navigation
+            };
+            grunt.file.write(options.destData, JSON.stringify(data, null, '\t'));
+
+            grunt.log.oklns('Stored data in ' + options.destData);
         }
     });
 
