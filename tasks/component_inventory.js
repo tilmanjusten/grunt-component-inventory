@@ -72,7 +72,7 @@ module.exports = function (grunt) {
         grunt.verbose.writeln('Read storage file ' + options.storage);
 
         if (!grunt.file.exists(options.template)) {
-            grunt.fail.warn('Template file ' + options.storage + ' does not exist.');
+            grunt.fail.warn('Template file ' + options.template + ' does not exist.');
         }
 
         if (!grunt.file.exists(options.storage)) {
@@ -216,7 +216,7 @@ module.exports = function (grunt) {
 
                 var categoryObj = {
                     items: {},
-                    name: item.category,
+                    name: item.category
                 };
 
                 prepared.categories.push(categoryObj);
